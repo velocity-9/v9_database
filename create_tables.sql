@@ -1,42 +1,56 @@
-DROP TABLE IF EXISTS logs CASCADE;
-DROP TABLE IF EXISTS stats CASCADE;
-DROP TABLE IF EXISTS workers CASCADE;
-DROP TABLE IF EXISTS components CASCADE;
+CREATE EXTENSION IF NOT EXISTS "pg-crypto";
+
+CREATE TYPE STATUS_COLOR AS ENUM ('GREEN', 'ORANGE', 'RED', 'GREY');
+CREATE TYPE DEPLOYMENT_STATUS AS ENUM ('ready-to-deploy', 'not-ready-to-deploy');
+
 DROP TABLE IF EXISTS users CASCADE;
-
 CREATE TABLE users (
-  user_id SERIAL PRIMARY KEY,
-  email VARCHAR(100) NOT NULL,
-  github_token VARCHAR(100) NOT NULL,
-  github_username VARCHAR(100) NOT NULL
+  user_id UUID DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL,
+  github_token TEXT NOT NULL,
+  github_username TEXT NOT NULL,
+  PRIMARY KEY (user_id)
 );
 
+DROP TABLE IF EXISTS components CASCADE;
 CREATE TABLE components (
-  component_id SERIAL PRIMARY KEY,
+  component_id UUID DEFAULT gen_random_uuid(),
   user_id SERIAL REFERENCES users(user_id),
-  github_repo VARCHAR(100) NOT NULL,
-  deployment_status VARCHAR(100) NOT NULL
+  github_repo TEXT NOT NULL,
+  deployment_status DEPLOYMENT_STATUS NOT NULL,
+  PRIMARY KEY(component_id)
 );
 
+DROP TABLE IF EXISTS workers CASCADE;
 CREATE TABLE workers (
-  worker_id SERIAL PRIMARY KEY,
-  worker_name VARCHAR(50) NOT NULL
+  worker_id UUID DEFAULT gen_random_uuid()
+  worker_name TEXT NOT NULL,
+  PRIMARY KEY(worker_id)
 );
 
+DROP TABLE IF EXISTS stats CASCADE;
 CREATE TABLE stats (
-  stat_id SERIAL PRIMARY KEY,
+  stat_id UUID DEFAULT gen_random_uuid(),
   worker_id SERIAL REFERENCES workers(worker_id),
   component_id SERIAL REFERENCES components(component_id),
   received_time TIMESTAMP NOT NULL,
-  color VARCHAR(20) NOT NULL,
-  stats_field VARCHAR(200) NOT NULL
+  color STATUS_COLOR NOT NULL,
+  stat_window_seconds DOUBLE PRECISION NOT NULL,
+  hits DOUBLE PRECISION NOT NULL,
+  avg_response_bytes DOUBLE PRECISION NOT NULL,
+  avg_ms_latency DOUBLE PRECISION NOT NULL,
+  ms_latency_percentiles JSONB NOT NULL,
+  PRIMARY KEY (stat_id)
 );
 
+DROP TABLE IF EXISTS logs CASCADE;
 CREATE TABLE logs (
-  log_id SERIAL PRIMARY KEY,
+  log_id UUID DEFAULT gen_random_uuid(),
   worker_id SERIAL REFERENCES workers(worker_id),
   component_id SERIAL REFERENCES components(component_id),
   execution_num INT NOT NULL,
   received_time TIMESTAMP NOT NULL,
-  log_text VARCHAR(400)
+  log_text TEXT,
+  log_error VASRCHAR(400),
+  PRIMARY KEY (log_id)
 );
