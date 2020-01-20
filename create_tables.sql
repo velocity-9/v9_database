@@ -1,12 +1,17 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-DROP TYPE IF EXISTS STATUS_COLOR;
-CREATE TYPE STATUS_COLOR AS ENUM ('green', 'orange', 'red', 'grey');
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS components CASCADE;
+DROP TABLE IF EXISTS workers CASCADE;
+DROP TABLE IF EXISTS stats CASCADE;
+DROP TABLE IF EXISTS logs CASCADE;
 
+DROP TYPE IF EXISTS STATUS_COLOR;
 DROP TYPE IF EXISTS DEPLOYMENT_STATUS;
+
+CREATE TYPE STATUS_COLOR AS ENUM ('green', 'orange', 'red', 'grey');
 CREATE TYPE DEPLOYMENT_STATUS AS ENUM ('ready', 'paused');
 
-DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   user_id UUID DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
@@ -15,7 +20,6 @@ CREATE TABLE users (
   PRIMARY KEY (user_id)
 );
 
-DROP TABLE IF EXISTS components CASCADE;
 CREATE TABLE components (
   component_id UUID DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(user_id),
@@ -24,14 +28,12 @@ CREATE TABLE components (
   PRIMARY KEY(component_id)
 );
 
-DROP TABLE IF EXISTS workers CASCADE;
 CREATE TABLE workers (
   worker_id UUID DEFAULT gen_random_uuid(),
   worker_name TEXT NOT NULL,
   PRIMARY KEY(worker_id)
 );
 
-DROP TABLE IF EXISTS stats CASCADE;
 CREATE TABLE stats (
   stat_id UUID DEFAULT gen_random_uuid(),
   worker_id UUID REFERENCES workers(worker_id),
@@ -46,7 +48,6 @@ CREATE TABLE stats (
   PRIMARY KEY (stat_id)
 );
 
-DROP TABLE IF EXISTS logs CASCADE;
 CREATE TABLE logs (
   log_id UUID DEFAULT gen_random_uuid(),
   worker_id UUID REFERENCES workers(worker_id),
