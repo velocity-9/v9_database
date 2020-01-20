@@ -11,13 +11,13 @@ INSERT INTO users(user_id, email, github_token, github_username)
 VALUES('6f099069-eeb8-4c32-974c-de520fa2b942', 'test4@test.com', '12345', 'test4');
 
 INSERT INTO components(user_id, github_repo, deployment_status)
-VALUES('672fe56f-6b7b-4c43-8225-d297bf9cacbe', 'test_repo', 'deployed');
+VALUES('672fe56f-6b7b-4c43-8225-d297bf9cacbe', 'test_repo', 'ready');
 
 INSERT INTO components(user_id, github_repo, deployment_status)
 VALUES('672fe56f-6b7b-4c43-8225-d297bf9cacbe', 'test_repo2', 'paused');
 
 INSERT INTO components(user_id, github_repo, deployment_status)
-VALUES('672fe56f-6b7b-4c43-8225-d297bf9cacbe', 'test_repo3', 'deployed');
+VALUES('672fe56f-6b7b-4c43-8225-d297bf9cacbe', 'test_repo3', 'ready');
 
-INSERT INTO workers(name)
+INSERT INTO workers(worker_name)
 VALUES('Tatooine');
