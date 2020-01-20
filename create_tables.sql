@@ -26,7 +26,7 @@ CREATE TABLE components (
 
 DROP TABLE IF EXISTS workers CASCADE;
 CREATE TABLE workers (
-  worker_id UUID DEFAULT gen_random_uuid()
+  worker_id UUID DEFAULT gen_random_uuid(),
   worker_name TEXT NOT NULL,
   PRIMARY KEY(worker_id)
 );
