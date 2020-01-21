@@ -7,15 +7,14 @@ DROP TABLE IF EXISTS stats CASCADE;
 DROP TABLE IF EXISTS logs CASCADE;
 
 DROP TYPE IF EXISTS STATUS_COLOR;
-DROP TYPE IF EXISTS DEPLOYMENT_STATUS;
+DROP TYPE IF EXISTS DEPLOYMENT_INTENTION;
 
 CREATE TYPE STATUS_COLOR AS ENUM ('green', 'orange', 'red', 'grey');
-CREATE TYPE DEPLOYMENT_STATUS AS ENUM ('ready', 'paused');
+CREATE TYPE DEPLOYMENT_INTENTION AS ENUM ('active', 'paused');
 
 CREATE TABLE users (
   user_id UUID DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
-  github_token TEXT NOT NULL,
   github_username TEXT NOT NULL,
   PRIMARY KEY (user_id)
 );
@@ -24,9 +23,15 @@ CREATE TABLE components (
   component_id UUID DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(user_id),
   github_repo TEXT NOT NULL,
-  deployment_status DEPLOYMENT_STATUS NOT NULL,
+  deployment_intention DEPLOYMENT_INTENTION NOT NULL,
+  UNIQUE (user_id, github_repo),
   PRIMARY KEY(component_id)
 );
+
+CREATE TABLE deploying {
+    component_id UUID REFERENCES components(component_id),
+    received_time TIMESTAMPTZ NOT NULL DEFAULT now(),
+};
 
 CREATE TABLE workers (
   worker_id UUID DEFAULT gen_random_uuid(),
@@ -38,7 +43,7 @@ CREATE TABLE stats (
   stat_id UUID DEFAULT gen_random_uuid(),
   worker_id UUID REFERENCES workers(worker_id),
   component_id UUID REFERENCES components(component_id),
-  received_time TIMESTAMPTZ NOT NULL,
+  received_time TIMESTAMPTZ NOT NULL DEFAULT now(),
   color STATUS_COLOR NOT NULL,
   stat_window_seconds DOUBLE PRECISION NOT NULL,
   hits DOUBLE PRECISION NOT NULL,
@@ -53,7 +58,7 @@ CREATE TABLE logs (
   worker_id UUID REFERENCES workers(worker_id),
   component_id UUID REFERENCES components(component_id),
   execution_num INT NOT NULL,
-  received_time TIMESTAMPTZ NOT NULL,
+  received_time TIMESTAMPTZ NOT NULL DEFAULT now(),
   log_text TEXT,
   log_error TEXT,
   PRIMARY KEY (log_id)
