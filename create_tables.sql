@@ -31,6 +31,7 @@ CREATE TABLE components (
 CREATE TABLE deploying (
     component_id UUID REFERENCES components(component_id),
     received_time TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY(component_id, received_time)
 );
 
 CREATE TABLE workers (
