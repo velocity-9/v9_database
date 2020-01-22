@@ -28,10 +28,10 @@ CREATE TABLE components (
   PRIMARY KEY(component_id)
 );
 
-CREATE TABLE deploying {
+CREATE TABLE deploying (
     component_id UUID REFERENCES components(component_id),
     received_time TIMESTAMPTZ NOT NULL DEFAULT now(),
-};
+);
 
 CREATE TABLE workers (
   worker_id UUID DEFAULT gen_random_uuid(),
