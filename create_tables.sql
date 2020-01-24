@@ -48,6 +48,8 @@ CREATE TABLE workers
 (
   worker_id UUID DEFAULT gen_random_uuid(),
   worker_name TEXT NOT NULL,
+  -- We control the `worker_name`, so it can be unique
+  UNIQUE(worker_name),
   PRIMARY KEY(worker_id)
 );
 
