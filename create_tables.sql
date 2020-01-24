@@ -79,3 +79,5 @@ CREATE TABLE logs
   log_error TEXT,
   PRIMARY KEY (log_id)
 );
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO v9_sys;
