@@ -53,6 +53,14 @@ CREATE TABLE workers
   PRIMARY KEY(worker_id)
 );
 
+CREATE TABLE currently_running
+(
+  worker_id UUID REFERENCES workers(worker_id),
+  component_id UUID REFERENCES components(component_id),
+  hash TEXT NOT NULL,
+  PRIMARY KEY(worker_id, component_id)
+);
+
 CREATE TABLE stats
 (
   stat_id UUID DEFAULT gen_random_uuid(),
