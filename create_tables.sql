@@ -75,6 +75,8 @@ CREATE TABLE stats
   ms_latency_percentiles JSONB NOT NULL,
   PRIMARY KEY (stat_id)
 );
+DROP INDEX IF EXISTS stat_time_sort;
+CREATE INDEX stat_time_sort ON stats (received_time DESC);
 
 CREATE TABLE logs
 (
